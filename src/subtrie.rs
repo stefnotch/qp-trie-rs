@@ -72,6 +72,20 @@ impl<'a, K: Borrow<[u8]>, V> SubTrie<'a, K, V> {
         SubTrie::new(node, self.key_byte_index + next_key_part.borrow().len())
     }
 
+    #[deprecated(
+        since = "TBD",
+        note = "Please use `subtrie` instead. It accepts incremental prefix and is more efficient: it needs not to search the common prefix in the trie again and again."
+    )]
+    pub fn old_subtrie<L: Borrow<[u8]>>(&self, prefix: L) -> SubTrie<'a, K, V> {
+        
+        let root = match self.root {
+            Some(ref node) => node,
+            None => return SubTrie::empty(),
+        };
+        let node = root.get_prefix(prefix.borrow());
+        SubTrie::new(node, prefix.borrow().len())
+    }
+
     /// Gets the value at the root of the subtrie.
     /// Only returns a value if we're at the end of the key.
     pub fn get_value(&self) -> Option<&'a V> {

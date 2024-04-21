@@ -95,7 +95,7 @@ impl<K, V> IntoIterator for Trie<K, V> {
     fn into_iter(self) -> Self::IntoIter {
         self.root
             .map(Node::into_iter)
-            .unwrap_or_else(IntoIter::default)
+            .unwrap_or_default()
     }
 }
 

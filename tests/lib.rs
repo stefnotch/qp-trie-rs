@@ -566,3 +566,31 @@ fn issue_40_subtree_api_extension_step() {
         Some(&2)
     );
 }
+#[test]
+fn ensure_deprecated_old_subtrie_still_work() {
+    use wrapper::{BStr, BString};
+
+    let mut trie = Trie::<BString, u32>::new();
+    trie.insert("abc".into(), 1);
+    trie.insert("a".into(), 99);
+    trie.insert("abcd".into(), 2);
+    trie.insert("abcde".into(), 3);
+    assert_eq!(
+        trie.subtrie(BStr::ref_str("a"))
+            .old_subtrie(BStr::ref_str("ab"))
+            .get_value(),
+        None
+    );
+    assert_eq!(
+        trie.subtrie(BStr::ref_str("a"))
+            .old_subtrie(BStr::ref_str("abcd"))
+            .get_value(),
+        Some(&2)
+    );
+    assert_eq!(
+        trie.subtrie(BStr::ref_str("a"))
+            .old_subtrie(BStr::ref_str("bcd"))
+            .get_value(),
+        None
+    );
+}
